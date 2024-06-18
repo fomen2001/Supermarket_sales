@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermrket Sales Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-image: url('/static/fond.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            margin-left: 200px;
+            
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+       
+        .table-responsive {
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
+            border-radius: 10px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"><i class="bi bi-shop">Supermarket Sales Prediction</i></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/result.html">Result</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/document.html">Documentation</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    <div class="container" >
+        <h1 class="mt-5">Sales Prediction</h1>
+     
+        <h2>Dataset</h2>
+        <div class="table-responsive" >
+            <table id="dataTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        {% for column in column_names %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                        <tr>
+                            {% for column in column_names %}
+                                <td>{{ row[column] }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+       
+        <h2 class="mt-5">Dataset Description</h2>
+        <div class="table-responsive">
+            <table id="descriptionTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for column, desc in description.items() %}
+                        <tr>
+                            <td>{{ column }}</td>
+                            <td>{{ desc }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+       <div class="container">
+        <h2 class="mt-5">Make a Prediction</h2>
+        <form action="/predict" method="post" class="mt-3">
+            <div class="form-group">
+                <label for="Order Date_year">Order Year</label>
+                <input type="number" class="form-control" id="Order Date_year" name="Order Date_year" required>
+            </div>
+            <div class="form-group">
+                <label for="Order Date_month">Order Month</label>
+                <input type="number" class="form-control" id="Order Date_month" name="Order Date_month" required>
+            </div>
+            <div class="form-group">
+                <label for="Order Date_day">Order Day</label>
+                <input type="number" class="form-control" id="Order Date_day" name="Order Date_day" required>
+            </div>
+            <div class="form-group">
+                <label for="Ship Date_year">Ship Year</label>
+                <input type="number" class="form-control" id="Ship Date_year" name="Ship Date_year" required>
+            </div>
+            <div class="form-group">
+                <label for="Ship Date_month">Ship Month</label>
+                <input type="number" class="form-control" id="Ship Date_month" name="Ship Date_month" required>
+            </div>
+            <div class="form-group">
+                <label for="Ship Date_day">Ship Day</label>
+                <input type="number" class="form-control" id="Ship Date_day" name="Ship Date_day" required>
+            </div>
+            <div class="form-group">
+                <label for="Ship Mode">Ship Mode</label>
+                <input type="text" class="form-control" id="Ship Mode" name="Ship Mode" required>
+            </div>
+            <div class="form-group">
+                <label for="Segment">Segment</label>
+                <input type="text" class="form-control" id="Segment" name="Segment" required>
+            </div>
+            <div class="form-group">
+                <label for="City">City</label>
+                <input type="text" class="form-control" id="City" name="City" required>
+            </div>
+            <div class="form-group">
+                <label for="State">State</label>
+                <input type="text" class="form-control" id="State" name="State" required>
+            </div>
+            <div class="form-group">
+                <label for="Postal Code">Postal Code</label>
+                <input type="text" class="form-control" id="Postal Code" name="Postal Code" required>
+            </div>
+            <div class="form-group">
+                <label for="Region">Region</label>
+                <input type="text" class="form-control" id="Region" name="Region" required>
+            </div>
+            <div class="form-group">
+                <label for="Product ID">Product ID</label>
+                <input type="text" class="form-control" id="Product ID" name="Product ID" required>
+            </div>
+            <div class="form-group">
+                <label for="Category">Category</label>
+                <input type="text" class="form-control" id="Category" name="Category" required>
+            </div>
+            <div class="form-group">
+                <label for="Sub-Category">Sub-Category</label>
+                <input type="text" class="form-control" id="Sub-Category" name="Sub-Category" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict Sales</button>
+        </form>
+    </div>
+    <footer>
+        <div class="container text-center">
+            <div class="footer-icons mb-3">
+                <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+                <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
+            </div>
+            <p>&copy; 2024 Supermarket Sales Prediction by FTVJ. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
+            $('#descriptionTable').DataTable();
+        });
+    </script>
+    <script>
+        let table = new DataTable('#myTable')
+    </script> 
+</body>
+</html>
