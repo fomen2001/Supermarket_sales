@@ -8,4 +8,4 @@ pip install numpy
 pip install scikit-learn
 pip install tensorflow
 
-here is to link to my google drive where i save the model i have build in google colab: 
+here is to link to my google drive where i save the model i have build in google colab: https://colab.research.google.com/drive/1Bbt0yZPz3cMQ6plfZn5SKygtMpSG846a?usp=drive_link
