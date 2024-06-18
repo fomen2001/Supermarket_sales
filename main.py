@@ -6,6 +6,7 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 import joblib
 import tensorflow as tf
+import tempfile 
 
 app = Flask(__name__)
 
@@ -68,6 +69,37 @@ def index():
 
     return render_template('index.html', data=data, column_names=columns, description=description)
     # return render_template('index.html', data=data.to_html(), description=data.describe().to_html())
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file and file.filename.endswith('.csv'):
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        file.save(temp_file.name)
+        uploaded_data = pd.read_csv(temp_file.name)
+        os.unlink(temp_file.name)
+        
+        # Preprocess the uploaded data
+        processed_data = preprocess_inputs(uploaded_data)
+        X_test = processed_data.drop('Sales', axis=1, errors='ignore')
+
+        # Ensure all necessary columns are present
+        for col in X_train.columns:
+            if col not in X_test.columns:
+                X_test[col] = 0
+
+        # Scale the input data
+        X_test_scaled = scaler.transform(X_test[X_train.columns])
+
+        # Make predictions
+        predictions = model.predict(X_test_scaled)
+        uploaded_data['Predicted Sales'] = predictions
+        
+        return uploaded_data.to_html()
 
 @app.route('/predict', methods=['POST'])
 def predict():
